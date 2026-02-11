@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Ajrak Code | Sindh-Wave Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --maroon: #800000; --indigo: #2e2a5e; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; color: white; 
+            font-family: 'Raleway', sans-serif; overflow: hidden; 
+        }
+        #videoPlayer { 
+            position: fixed; inset: 0; width: 100%; height: 100%; 
+            object-fit: cover; z-index: 1; transition: opacity 1s; 
+        }
+        .overlay { 
+            position: fixed; inset: 0; z-index: 10; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); 
+            opacity: 0; pointer-events: none; transition: 0.8s; text-align: center; 
+            padding: 20px;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .choice-btn { 
+            background: rgba(46, 42, 94, 0.6); border: 2px solid var(--gold); 
+            padding: 18px 30px; color: var(--gold); font-family: 'Cinzel'; 
+            letter-spacing: 2px; transition: 0.3s; cursor: pointer; 
+            margin: 10px; width: 280px; text-transform: uppercase;
+        }
+        .choice-btn:active { background: var(--gold); color: black; transform: scale(0.95); }
+        .ajrak-line { 
+            position: fixed; bottom: 0; width: 100%; height: 8px; 
+            background: repeating-linear-gradient(90deg, var(--maroon), var(--maroon) 20px, #fff 20px, #fff 40px); 
+            z-index: 100; 
+        }
+        h1 { font-family: 'Cinzel', serif; text-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+    </style>
+</head>
+<body>
+
+    <video id="videoPlayer" playsinline></video>
+    <audio id="audioMusic" loop></audio>
+    <audio id="audioNarration"></audio>
+
+    <!-- Start Screen -->
+    <div id="startScreen" class="overlay active">
+        <h1 class="text-4xl md:text-7xl text-[#d4af37] font-bold mb-4">The Ajrak Code</h1>
+        <p class="tracking-widest opacity-70 mb-10 uppercase text-sm">A Sindh-Wave Interactive Experience</p>
+        <button onclick="initExperience()" class="choice-btn">Begin Journey</button>
+    </div>
+
+    <!-- Choice Screen -->
+    <div id="choiceScreen" class="overlay">
+        <h2 class="text-3xl text-[#d4af37] mb-4 font-bold" style="font-family: 'Cinzel'">The Indus Flow</h2>
+        <p class="mb-10 opacity-70 italic text-lg">The sequence is breaking. How will you restore it?</p>
+        <div class="flex flex-col md:flex-row gap-4">
+            <button onclick="makeChoice('mystic')" class="choice-btn">The Mystic Path</button>
+            <button onclick="makeChoice('tech')" class="choice-btn">The Tech Path</button>
+        </div>
+    </div>
+
+    <div class="ajrak-line"></div>
+
+    <script>
+        const ASSETS = {
+            // Your 30s Intro Video
+            intro: 'https://res.cloudinary.com/dyfdtq7jt/video/upload/0211_3_jedmzu.mp4',
+            
+            // Your 12s Mystic Ending (Bhit Shah)
+            mystic: 'https://res.cloudinary.com/dyfdtq7jt/video/upload/0211_1_irecbf.mp4',
+            
+            // Your 8s Tech Ending (Future City)
+            tech: 'https://res.cloudinary.com/dyfdtq7jt/video/upload/0211_2_ce0v1k.mp4',
+            
+            // AUDIO - REPLACE THESE WITH YOUR CLOUDINARY FILENAMES
+            music: 'https://res.cloudinary.com/dyfdtq7jt/video/upload/YOUR_MUSIC_ID.mp3',
+            voice: 'https://res.cloudinary.com/dyfdtq7jt/video/upload/YOUR_VOICE_ID.mp3'
+        };
+
+        const player = document.getElementById('videoPlayer');
+        const music = document.getElementById('audioMusic');
+        const voice = document.getElementById('audioNarration');
+        const choiceScreen = document.getElementById('choiceScreen');
+
+        function initExperience() {
+            document.getElementById('startScreen').classList.remove('active');
+            
+            player.src = ASSETS.intro;
+            music.src = ASSETS.music;
+            voice.src = ASSETS.voice;
+            
+            player.play();
+            music.play();
+            voice.play();
+
+            // When the 30s intro ends, trigger choice UI
+            player.onended = () => {
+                choiceScreen.classList.add('active');
+                player.loop = true; // Looping the end of intro as background
+                player.play();
+                music.volume = 0.3; // Lower music for the choice moment
+            };
+        }
+
+        function makeChoice(path) {
+            choiceScreen.classList.remove('active');
+            player.loop = false;
+            music.volume = 1.0;
+
+            if(path === 'mystic') {
+                player.src = ASSETS.mystic;
+            } else {
+                player.src = ASSETS.tech;
+            }
+            
+            player.play();
+            
+            // When ending video finishes
+            player.onended = () => {
+                setTimeout(() => {
+                    alert("The Ajrak Code has been rewritten.");
+                    location.reload();
+                }, 1000);
+            };
+        }
+    </script>
+</body>
+</html>
+
